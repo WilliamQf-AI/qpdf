@@ -262,6 +262,11 @@ struct QPDFJob::PageNo
 QPDFJob::QPDFJob() :
     m(std::make_shared<Members>(*this))
 {
+        // by rqf 20251022 — 绑定 logger 到浏览器 console
+    //     // 在 wasm 下，绑定到标准流；Emscripten 会把 cout/cerr 走到 Module.print / printErr
+#ifdef __EMSCRIPTEN__
+    setOutputStreams(&std::cout, &std::cerr);
+#endif
 }
 
 void
@@ -1804,11 +1809,6 @@ QPDFJob::processFile(
     bool used_for_input,
     bool main_input)
 {
-        // by rqf 20251022 — 绑定 logger 到浏览器 console
-    //     // 在 wasm 下，绑定到标准流；Emscripten 会把 cout/cerr 走到 Module.print / printErr
-#ifdef __EMSCRIPTEN__
-    setOutputStreams(&std::cout, &std::cerr);
-#endif
     auto f1 = std::mem_fn<void(char const*, char const*)>(&QPDF::processFile);
     auto fn = std::bind(f1, std::placeholders::_1, filename, std::placeholders::_2);
     doProcess(pdf, fn, password, strcmp(filename, "") == 0, used_for_input, main_input);
