@@ -157,7 +157,7 @@ Objects::parse(char const* password)
             throw damagedPDF("", -1, std::string("error reading xref: ") + e.what());
         }
     } catch (QPDFExc& e) {
-        if (!cf.surpress_recovery()) {
+        if (1/*!cf.surpress_recovery()*/) {
             reconstruct_xref(e, xref_offset > 0);
         } else {
             throw;
