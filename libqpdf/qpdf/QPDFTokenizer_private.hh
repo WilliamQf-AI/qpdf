@@ -35,7 +35,7 @@ namespace qpdf
         QPDFTokenizer::Token readToken(
             InputSource& input,
             std::string const& context,
-            bool allow_bad = false,
+            bool allow_bad = true,
             size_t max_len = 0);
 
         // Calling this method puts the tokenizer in a state for reading inline images. You should
