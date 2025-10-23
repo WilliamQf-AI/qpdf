@@ -267,7 +267,7 @@ QPDFJob::QPDFJob() :
 #ifdef __EMSCRIPTEN__
    auto log = std::make_shared<QPDFLogger>();
    log->setOutputStreams(&std::cout, &std::cerr); // 关键：绑定到标准流
-   pdf->setLogger(log); 
+   this->setLogger(log); 
 #endif
 }
 
@@ -1811,6 +1811,10 @@ QPDFJob::processFile(
     bool used_for_input,
     bool main_input)
 {
+#ifdef __EMSCRIPTEN__
+    // 确保 QPDF 对象也用同一个 logger
+    pdf->setLogger(this->getLogger());
+#endif
     auto f1 = std::mem_fn<void(char const*, char const*)>(&QPDF::processFile);
     auto fn = std::bind(f1, std::placeholders::_1, filename, std::placeholders::_2);
     doProcess(pdf, fn, password, strcmp(filename, "") == 0, used_for_input, main_input);
