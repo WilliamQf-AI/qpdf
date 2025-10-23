@@ -265,7 +265,9 @@ QPDFJob::QPDFJob() :
         // by rqf 20251022 — 绑定 logger 到浏览器 console
     //     // 在 wasm 下，绑定到标准流；Emscripten 会把 cout/cerr 走到 Module.print / printErr
 #ifdef __EMSCRIPTEN__
-    setOutputStreams(&std::cout, &std::cerr);
+   auto log = std::make_shared<QPDFLogger>();
+   log->setOutputStreams(&std::cout, &std::cerr); // 关键：绑定到标准流
+   pdf->setLogger(log); 
 #endif
 }
 
