@@ -404,6 +404,9 @@ QPDFJob::createQPDF()
 {
     checkConfiguration();
     std::unique_ptr<QPDF> pdf_sp;
+    #ifdef __EMSCRIPTEN__
+    pdf.setLogger(m->log);
+#endif
     try {
         processFile(pdf_sp, m->infile_nm(), m->password.data(), true, true);
     } catch (QPDFExc& e) {
